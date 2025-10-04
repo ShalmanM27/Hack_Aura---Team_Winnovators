@@ -3,29 +3,66 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
 
 // ----------------- FEED -----------------
-export const createPost = (data) => axios.post(`${API_URL}/feed/create`, data);
+export const createPost = (data) =>
+  axios.post(`${API_URL}/feed/create`, data, { headers: { "Content-Type": "application/json" } });
+
 export const updatePost = (post_id, content, media_hash = "") =>
-  axios.post(`${API_URL}/feed/update`, { post_id, content, media_hash });
-export const deletePost = (post_id) => axios.post(`${API_URL}/feed/delete`, { post_id });
-export const likePost = (data) => axios.post(`${API_URL}/feed/like`, data);
-export const removeLike = (data) => axios.post(`${API_URL}/feed/removeLike`, data);
-export const dislikePost = (data) => axios.post(`${API_URL}/feed/dislike`, data);
-export const removeDislike = (data) => axios.post(`${API_URL}/feed/removeDislike`, data);
+  axios.post(
+    `${API_URL}/feed/update`,
+    { post_id: Number(post_id), content, media_hash },
+    { headers: { "Content-Type": "application/json" } }
+  );
+
+export const deletePost = (post_id) =>
+  axios.post(`${API_URL}/feed/delete`, { post_id: Number(post_id) }, { headers: { "Content-Type": "application/json" } });
+
+export const likePost = (post_id) =>
+  axios.post(`${API_URL}/feed/like`, { post_id: Number(post_id) }, { headers: { "Content-Type": "application/json" } });
+
+export const removeLike = (post_id) =>
+  axios.post(`${API_URL}/feed/removeLike`, { post_id: Number(post_id) }, { headers: { "Content-Type": "application/json" } });
+
+export const dislikePost = (post_id) =>
+  axios.post(`${API_URL}/feed/dislike`, { post_id: Number(post_id) }, { headers: { "Content-Type": "application/json" } });
+
+export const removeDislike = (post_id) =>
+  axios.post(`${API_URL}/feed/removeDislike`, { post_id: Number(post_id) }, { headers: { "Content-Type": "application/json" } });
 
 export const getLatestPosts = async (count = 10, userAddress = null) => {
   const res = await axios.get(`${API_URL}/feed/latest/${count}`, { params: { user_address: userAddress } });
   return res.data.posts || [];
 };
 
+export const getPostById = async (post_id, userAddress = null) => {
+  const res = await axios.get(`${API_URL}/feed/${post_id}`, { params: { user_address: userAddress } });
+  return res.data.post || null;
+};
+
 // ----------------- COMMENT -----------------
-export const createComment = ({ post_id, content, media_hash = "" }) =>
-  axios.post(`${API_URL}/comment/create`, { post_id, content, media_hash });
-export const updateComment = ({ comment_id, content, media_hash = "" }) =>
-  axios.post(`${API_URL}/comment/update`, { comment_id, content, media_hash });
-export const deleteComment = (comment_id) => axios.post(`${API_URL}/comment/delete`, { comment_id });
+export const createComment = (post_id, content, media_hash = "") =>
+  axios.post(
+    `${API_URL}/comment/create`,
+    { post_id: Number(post_id), content, media_hash },
+    { headers: { "Content-Type": "application/json" } }
+  );
+
+export const updateComment = (comment_id, content, media_hash = "") =>
+  axios.post(
+    `${API_URL}/comment/update`,
+    { comment_id: Number(comment_id), content, media_hash },
+    { headers: { "Content-Type": "application/json" } }
+  );
+
+export const deleteComment = (comment_id) =>
+  axios.post(
+    `${API_URL}/comment/delete`,
+    { comment_id: Number(comment_id) },
+    { headers: { "Content-Type": "application/json" } }
+  );
+
 export const getComments = async (post_id) => {
   const res = await axios.get(`${API_URL}/comment/${post_id}`);
-  return res.data.comments || [];
+  return (res.data.comments || []).filter(c => c.exists);
 };
 
 // ----------------- LEARNING -----------------

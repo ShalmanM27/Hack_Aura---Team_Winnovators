@@ -2,6 +2,7 @@
 from fastapi import APIRouter, Query
 from pydantic import BaseModel
 from app.services import feed_service
+from app.services import profile_service  # Import profile_service
 
 router = APIRouter(prefix="/feed", tags=["Feed"])
 
@@ -74,11 +75,47 @@ async def remove_dislike(data: PostAction):
 @router.get("/{post_id}")
 async def get_post(post_id: int, user_address: str = Query(None)):
     post = feed_service.get_post(post_id, user_address)
-    return {"success": True, "post": post}
+    owner_address = post.get("owner")
+    owner_username = None
+    if owner_address:
+        profile = profile_service.get_profile_by_address(owner_address)
+        owner_username = profile.get("username") if profile and profile.get("username") else owner_address
+    else:
+        owner_username = "Unknown"
+    created_at = post.get("created_at")
+    if not created_at:
+        created_at = None  # or set to 0 if you want to show "N/A" in frontend
+    return {
+        "success": True,
+        "post": {
+            **post,
+            "owner": owner_address,
+            "owner_username": owner_username,
+            "created_at": created_at
+        }
+    }
 
 
 # Get latest N posts
 @router.get("/latest/{count}")
 async def get_latest_posts(count: int = 10, user_address: str = Query(None)):
     posts = feed_service.get_latest_posts(count, user_address)
-    return {"success": True, "posts": posts}
+    enriched_posts = []
+    for post in posts:
+        owner_address = post.get("owner")
+        owner_username = None
+        if owner_address:
+            profile = profile_service.get_profile_by_address(owner_address)
+            owner_username = profile.get("username") if profile and profile.get("username") else owner_address
+        else:
+            owner_username = "Unknown"
+        created_at = post.get("created_at")
+        if not created_at:
+            created_at = None
+        enriched_posts.append({
+            **post,
+            "owner": owner_address,
+            "owner_username": owner_username,
+            "created_at": created_at
+        })
+    return {"success": True, "posts": enriched_posts}

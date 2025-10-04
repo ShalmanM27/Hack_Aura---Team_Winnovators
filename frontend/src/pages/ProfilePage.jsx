@@ -58,17 +58,71 @@ const ProfilePage = ({ userAddress }) => {
   };
 
   if (!userAddress) {
-    return <p>Connect your wallet to manage profile.</p>;
+    return (
+      <div style={{
+        background: "linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%)",
+        borderRadius: "18px",
+        boxShadow: "0 4px 24px rgba(44,62,80,0.10)",
+        padding: "32px",
+        textAlign: "center",
+        color: "#2563eb",
+        fontWeight: 600,
+        fontSize: "1.15rem",
+        margin: "40px auto",
+        maxWidth: "400px"
+      }}>
+        Connect your wallet to manage profile.
+      </div>
+    );
   }
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div style={{
+        background: "linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%)",
+        borderRadius: "18px",
+        boxShadow: "0 4px 24px rgba(44,62,80,0.10)",
+        padding: "32px",
+        textAlign: "center",
+        color: "#2563eb",
+        fontWeight: 600,
+        fontSize: "1.15rem",
+        margin: "40px auto",
+        maxWidth: "400px"
+      }}>
+        Loading...
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h2>My Profile</h2>
-      {message && <p style={{ color: "red" }}>{message}</p>}
+    <div style={{
+      background: "linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%)",
+      borderRadius: "24px",
+      boxShadow: "0 8px 32px rgba(44,62,80,0.09)",
+      padding: "40px",
+      maxWidth: "480px",
+      margin: "48px auto",
+      textAlign: "center",
+      animation: "fadeIn 0.8s cubic-bezier(.25,.8,.25,1)"
+    }}>
+      <style>
+        {`
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px);}
+            to { opacity: 1; transform: translateY(0);}
+          }
+        `}
+      </style>
+      <h2 style={{
+        color: "#2563eb",
+        fontWeight: 800,
+        fontSize: "2rem",
+        marginBottom: "24px",
+        letterSpacing: "1px",
+        textShadow: "0 2px 8px rgba(44,62,80,0.10)"
+      }}>My Profile</h2>
+      {message && <p style={{ color: "#e11d48", fontWeight: 600, marginBottom: "18px" }}>{message}</p>}
 
       {!profile?.exists && !editing && (
         <button
@@ -96,14 +150,18 @@ const ProfilePage = ({ userAddress }) => {
 
 const styles = {
   createButton: {
-    padding: "10px 18px",
+    padding: "12px 28px",
     cursor: "pointer",
-    backgroundColor: "#4b6cb7",
+    background: "linear-gradient(90deg, #2563eb 0%, #38bdf8 100%)",
     color: "#fff",
     outline: "none",
     border: "none",
-    borderRadius: "5px",
-    marginTop: "10px",
+    borderRadius: "8px",
+    marginTop: "18px",
+    fontWeight: 700,
+    fontSize: "1.08rem",
+    boxShadow: "0 2px 8px rgba(52,152,219,0.10)",
+    transition: "background 0.2s",
   },
 };
 

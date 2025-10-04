@@ -17,8 +17,9 @@ const ProfileAvatar = ({ avatarURI, size = 80 }) => {
       style={{
         borderRadius: "50%",
         objectFit: "cover",
-        border: "2px solid #4b6cb7",
-        background: "#eee",
+        border: "3px solid #2563eb",
+        background: "#f8fafc",
+        boxShadow: "0 2px 12px rgba(44,62,80,0.10)",
       }}
       onError={handleError}
     />

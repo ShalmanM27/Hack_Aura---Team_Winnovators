@@ -89,10 +89,10 @@ def get_post(post_id: int, user_address: str = None):
         res = feed_contract.functions.getPost(post_id).call()
         post = {
             "id": res[0],
-            "author": res[1],
+            "owner": res[1],  # changed from "author" to "owner"
             "content": res[2],
             "mediaHash": res[3],
-            "timestamp": res[4],
+            "created_at": res[4],  # changed from "timestamp" to "created_at"
             "likeCount": res[5],
             "dislikeCount": res[6],
             "exists": res[7]
@@ -130,7 +130,6 @@ def get_latest_posts(count: int = 10, user_address: str = None):
         likeCounts = res[5]
         dislikeCounts = res[6]
 
-        # Batch fetch liked/disliked status per user
         liked_status = []
         disliked_status = []
         if user_address:
@@ -141,10 +140,10 @@ def get_latest_posts(count: int = 10, user_address: str = None):
         for i in range(len(post_ids)):
             post = {
                 "id": post_ids[i],
-                "author": authors[i],
+                "owner": authors[i],  # changed from "author" to "owner"
                 "content": contents[i],
                 "mediaHash": mediaHashes[i],
-                "timestamp": timestamps[i],
+                "created_at": timestamps[i],  # changed from "timestamp" to "created_at"
                 "likeCount": likeCounts[i],
                 "dislikeCount": dislikeCounts[i],
                 "likedByUser": liked_status[i] if user_address else False,
@@ -154,4 +153,5 @@ def get_latest_posts(count: int = 10, user_address: str = None):
 
         return posts
     except Exception as e:
+        raise Exception(f"Error fetching latest posts: {str(e)}")
         raise Exception(f"Error fetching latest posts: {str(e)}")
