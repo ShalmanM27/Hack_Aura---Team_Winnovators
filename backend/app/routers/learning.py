@@ -148,6 +148,9 @@ async def delete_module(payload: dict):
 # ----------------- Completion & Progress -----------------
 @router.post("/complete")
 async def complete_module(payload: CompleteModuleReq):
+    """
+    Mark a module as completed for a user and generate AI quiz.
+    """
     try:
         receipt = learning_service.complete_module(
             payload.user_address,
@@ -159,8 +162,7 @@ async def complete_module(payload: CompleteModuleReq):
         return {"success": True, "receipt": receipt}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
+    
 @router.get("/progress/{user_address}/{topic_id}")
 async def get_progress(user_address: str, topic_id: int):
     try:

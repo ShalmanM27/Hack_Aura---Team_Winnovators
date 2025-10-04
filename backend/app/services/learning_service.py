@@ -73,36 +73,76 @@ def generate_ai_content_simple(topic_id: int, module_title: str):
         logger.exception("AI content generation failed: %s", e)
         return f"Learning module: {module_title}. (AI failed, placeholder content.)"
 
+import json
 
 def generate_quiz_ai(topic_id: int, module_id: int, question_count: int = 5):
+    """
+    Generate a multiple-choice quiz from the module content using AI.
+    Returns a list of objects: [{q:..., options:[...], answerIndex:...}, ...]
+    """
     module_entry = modules_col.find_one({"module_id": module_id, "topic_id": topic_id})
-    content_text = module_entry["content"] if module_entry else "No content found"
-    
-    prompt = f"Generate {question_count} multiple choice questions from this content in simple language:\n{content_text}"
-    
+    content_text = module_entry["content"] if module_entry else "No content available"
+
+    prompt = f"""
+    Generate {question_count} multiple choice questions from this content.
+    Return the result strictly as valid JSON: a list of objects with
+    "q" (question string), "options" (array of 4 options), "answerIndex" (0-based index of correct option).
+
+    Content:
+    {content_text}
+
+    Example format:
+    [
+      {{"q":"Sample question?","options":["A","B","C","D"],"answerIndex":1}},
+      ...
+    ]
+    """
+
     if not OPENROUTER_KEY:
         # Fallback placeholder quiz
         return [{"q": f"Question {i+1}", "options": ["A","B","C","D"], "answerIndex":0} for i in range(question_count)]
-    
+
     payload = {
         "model": "x-ai/grok-4-fast",
-        "messages": [{"role": "user", "content": [{"type":"text","text": prompt}]}]
+        "messages": [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
     }
     headers = {"Authorization": f"Bearer {OPENROUTER_KEY}", "Content-Type": "application/json"}
-    
+
     try:
         response = requests.post(OPENROUTER_URL, headers=headers, data=json.dumps(payload))
         response.raise_for_status()
         result = response.json()
         text = result["choices"][0]["message"]["content"]
+
         if isinstance(text, list):
-            text = "".join([c.get("text","") for c in text])
-        return text
-    except Exception as e:
-        logger.exception("AI quiz generation failed: %s", e)
+            # If returned as a list of text chunks, join
+            text = "".join([c.get("text", "") for c in text])
+
+        # Attempt to parse JSON
+        try:
+            quiz_list = json.loads(text)
+            if isinstance(quiz_list, list):
+                # Ensure each question has required fields
+                valid_quiz = []
+                for q in quiz_list:
+                    if "q" in q and "options" in q and "answerIndex" in q:
+                        valid_quiz.append({
+                            "q": q["q"],
+                            "options": q["options"][:4],  # ensure max 4 options
+                            "answerIndex": int(q["answerIndex"])
+                        })
+                if valid_quiz:
+                    return valid_quiz
+        except Exception:
+            pass
+
+        # Fallback placeholder if parsing fails
         return [{"q": f"Question {i+1}", "options": ["A","B","C","D"], "answerIndex":0} for i in range(question_count)]
 
-
+    except Exception as e:
+        logger.exception("AI quiz generation failed: %s", e)
+        # Fallback placeholder quiz
+        return [{"q": f"Question {i+1}", "options": ["A","B","C","D"], "answerIndex":0} for i in range(question_count)]
 # ----------------- Topics -----------------
 def get_topics():
     if learning_contract is None:
