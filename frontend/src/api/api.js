@@ -112,20 +112,32 @@ export const generateModuleContent = (topic_id, module_title) =>
 
 // ----------------- DAO -----------------
 export const createProposal = (description, duration) =>
-  axios.post(`${API_URL}/dao/create`, { description, duration });
+  axios.post(`${API_URL}/dao/create`, { description, duration }, { headers: { "Content-Type": "application/json" } });
 
 export const voteProposal = (proposal_id, support) =>
-  axios.post(`${API_URL}/dao/vote`, { proposal_id, support });
+  axios.post(`${API_URL}/dao/vote`, { proposal_id, support }, { headers: { "Content-Type": "application/json" } });
 
 export const executeProposal = (proposal_id) =>
-  axios.post(`${API_URL}/dao/execute`, { proposal_id });
+  axios.post(`${API_URL}/dao/execute`, { proposal_id }, { headers: { "Content-Type": "application/json" } });
 
-export const getProposal = (proposal_id) => axios.get(`${API_URL}/dao/${proposal_id}`);
+export const getProposal = async (proposal_id) => {
+  const res = await axios.get(`${API_URL}/dao/${proposal_id}`);
+  return res.data.proposal || null;
+};
 
-export const getProposals = async () => {
-  const res = await axios.get(`${API_URL}/dao`);
+// ✅ Get all proposals proposed by a specific user (reverse order)
+export const getUserProposals = async (user_address) => {
+  const res = await axios.get(`${API_URL}/dao/user/${user_address}`);
   return res.data.proposals || [];
 };
+
+// ✅ Get all live ongoing proposals excluding proposals by the user
+export const getLiveProposals = async (user_address) => {
+  const res = await axios.get(`${API_URL}/dao/live/${user_address}`);
+  return res.data.proposals || [];
+};
+
+
 
 // ----------------- MODERATION -----------------
 export const flagContent = (content_id) =>
