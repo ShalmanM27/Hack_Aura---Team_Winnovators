@@ -131,7 +131,6 @@ function AnimatedNavLinks({ links }) {
     </>
   );
 }
-
 // --- UI DESIGN CHANGES END ---
 
 function App() {
@@ -231,7 +230,7 @@ function App() {
                     path="/learning/*"
                     element={<LearningPage userAddress={userAddress} />}
                   />
-                  <Route path="/dao" element={<DAOPage userAddress={userAddress} />} />
+                  <Route path="/dao" element={<DAOPage currentUserAddress={userAddress} />} />
                   <Route
                     path="/moderation"
                     element={<ModerationPage userAddress={userAddress} />}

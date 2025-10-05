@@ -11,12 +11,57 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
+						"name": "dayNumber",
+						"type": "uint256"
+					}
+				],
+				"name": "DayCompleted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
 						"name": "streakCount",
 						"type": "uint256"
 					}
 				],
 				"name": "StreakUpdated",
 				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "completeTask",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					}
+				],
+				"name": "getLast7DaysStatus",
+				"outputs": [
+					{
+						"internalType": "bool[7]",
+						"name": "",
+						"type": "bool[7]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			},
 			{
 				"inputs": [
@@ -34,26 +79,7 @@
 						"type": "uint256"
 					}
 				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "lastActionTimestamp",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -73,19 +99,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "user",
-						"type": "address"
-					}
-				],
-				"name": "updateStreak",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			}
 		]

@@ -8,7 +8,7 @@ import QuizPage from "../components/Learning/QuizPage";
 const LearningPage = ({ userAddress }) => {
   return (
     <Routes>
-      <Route path="/" element={<TopicList />} />
+      <Route path="/" element={<TopicList userAddress={userAddress} />} />
       <Route path="/topic/:topicId" element={<ModuleListWrapper userAddress={userAddress} />} />
       <Route path="/topic/:topicId/module/:moduleId" element={<ModuleDetail userAddress={userAddress} />} />
       <Route path="/topic/:topicId/module/:moduleId/quiz" element={<QuizPage userAddress={userAddress} />} />

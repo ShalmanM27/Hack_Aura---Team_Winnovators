@@ -310,6 +310,12 @@ def complete_module(user_address: str, topic_id: int, module_id: int, score: int
         content_entry = modules_col.find_one({"module_id": module_id, "topic_id": topic_id})
         question_count = content_entry.get("questionCount", 5) if content_entry else 5
 
+    # Ensure question_count is always an int
+    try:
+        question_count = int(question_count)
+    except Exception:
+        question_count = 5
+
     quiz = generate_quiz_ai(topic_id, module_id, question_count)
     modules_col.update_one({"module_id": module_id, "topic_id": topic_id}, {"$set": {"last_quiz": quiz}}, upsert=True)
 

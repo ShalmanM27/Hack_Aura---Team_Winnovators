@@ -15,18 +15,20 @@ contract DAO {
 
     uint256 public nextProposalId;
     mapping(uint256 => Proposal) public proposals;
-    mapping(uint256 => mapping(address => bool)) public voted;
 
-    // New mappings to track user proposals and global proposals
+    // Track user vote type: 0 = no vote, 1 = like, 2 = dislike
+    mapping(uint256 => mapping(address => uint8)) public userVote;
+
+    // Track proposals by user and globally
     mapping(address => uint256[]) private userProposals;
     uint256[] private allProposals;
 
+    // ----------------- EVENTS -----------------
     event ProposalCreated(uint256 indexed proposalId, address proposer);
-    event Voted(uint256 indexed proposalId, address voter, bool support);
+    event Voted(uint256 indexed proposalId, address voter, uint8 voteType);
     event ProposalExecuted(uint256 indexed proposalId);
 
     // ----------------- DAO FUNCTIONS -----------------
-
     function createProposal(string calldata description, uint256 duration) external {
         Proposal storage p = proposals[nextProposalId];
         p.id = nextProposalId;
@@ -48,17 +50,37 @@ contract DAO {
 
     function vote(uint256 proposalId, bool support) external {
         Proposal storage p = proposals[proposalId];
-        require(block.timestamp >= p.startTime && block.timestamp <= p.endTime, "Voting closed");
-        require(!voted[proposalId][msg.sender], "Already voted");
+        require(block.timestamp <= p.endTime, "Voting closed");
 
-        voted[proposalId][msg.sender] = true;
+        uint8 previousVote = userVote[proposalId][msg.sender];
+
         if (support) {
-            p.yesVotes++;
+            // Like vote
+            if (previousVote == 2) {
+                // previously disliked
+                p.noVotes--;
+                p.yesVotes++;
+                userVote[proposalId][msg.sender] = 1;
+            } else if (previousVote == 0) {
+                // first vote
+                p.yesVotes++;
+                userVote[proposalId][msg.sender] = 1;
+            }
         } else {
-            p.noVotes++;
+            // Dislike vote
+            if (previousVote == 1) {
+                // previously liked
+                p.yesVotes--;
+                p.noVotes++;
+                userVote[proposalId][msg.sender] = 2;
+            } else if (previousVote == 0) {
+                // first vote
+                p.noVotes++;
+                userVote[proposalId][msg.sender] = 2;
+            }
         }
 
-        emit Voted(proposalId, msg.sender, support);
+        emit Voted(proposalId, msg.sender, userVote[proposalId][msg.sender]);
     }
 
     function executeProposal(uint256 proposalId) external {
@@ -76,7 +98,7 @@ contract DAO {
 
     // ----------------- VIEW FUNCTIONS -----------------
 
-    // Get all proposals of a specific user (reverse order: newest first)
+    // Get all proposals of a specific user (newest → oldest)
     function getUserProposals(address user) external view returns (Proposal[] memory) {
         uint256[] storage ids = userProposals[user];
         uint256 count = ids.length;
@@ -87,7 +109,7 @@ contract DAO {
         return result;
     }
 
-    // Get all ongoing proposals excluding a specific user
+    // Get all ongoing proposals excluding a specific user (newest → oldest)
     function getOngoingProposalsExcluding(address user) external view returns (Proposal[] memory) {
         uint256 total = allProposals.length;
         uint256 liveCount = 0;
@@ -103,9 +125,9 @@ contract DAO {
         Proposal[] memory result = new Proposal[](liveCount);
         uint256 index = 0;
 
-        // Second pass: populate result
-        for (uint256 i = 0; i < total; i++) {
-            Proposal storage p = proposals[allProposals[i]];
+        // Second pass: populate in reverse order (newest → oldest)
+        for (uint256 i = total; i > 0; i--) {
+            Proposal storage p = proposals[allProposals[i - 1]];
             if (block.timestamp <= p.endTime && p.proposer != user) {
                 result[index] = p;
                 index++;
@@ -118,5 +140,10 @@ contract DAO {
     // Get a single proposal by ID
     function getProposal(uint256 proposalId) external view returns (Proposal memory) {
         return proposals[proposalId];
+    }
+
+    // Get the vote of a user on a proposal
+    function getUserVote(uint256 proposalId, address user) external view returns (uint8) {
+        return userVote[proposalId][user]; // 0 = no vote, 1 = like, 2 = dislike
     }
 }

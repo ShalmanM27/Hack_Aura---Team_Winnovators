@@ -77,7 +77,12 @@ const DAOPage = ({ currentUserAddress }) => {
         {loading ? (
           <p style={{ color: "#64748b", fontWeight: 600 }}>Loading...</p>
         ) : (
-          <ProposalList proposals={myProposals} userAddress={currentUserAddress} onUpdated={fetchProposals} />
+          <ProposalList
+            proposals={myProposals}
+            userAddress={currentUserAddress}
+            onUpdated={fetchProposals}
+            hideProposer={true}
+          />
         )}
       </div>
 

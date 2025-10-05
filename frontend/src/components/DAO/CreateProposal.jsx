@@ -3,23 +3,33 @@ import { createProposal } from "../../api/api";
 
 const CreateProposal = ({ onProposalCreated }) => {
   const [description, setDescription] = useState("");
-  const [duration, setDuration] = useState(3600); // default 1 hour
+  const [endDateTime, setEndDateTime] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
+    if (!description || !endDateTime) {
+      setError("Please enter description and select end date/time.");
+      return;
+    }
+    // Ensure seconds are set to zero and local time is used
+    const endDate = new Date(endDateTime.replace("T", " ") + ":00");
+    const now = new Date();
+    const duration = Math.floor((endDate.getTime() - now.getTime()) / 1000);
+    if (duration < 3600) {
+      setError("Duration must be at least 1 hour from now.");
+      return;
+    }
+    setLoading(true);
     try {
-      const receipt = await createProposal(description, Number(duration));
+      await createProposal(description, duration);
       setDescription("");
-      setDuration(3600);
+      setEndDateTime("");
       if (onProposalCreated) onProposalCreated();
-      console.log("Proposal created:", receipt);
     } catch (err) {
-      console.error(err);
-      setError(err.message || "Failed to create proposal");
+      setError("Failed to create proposal.");
     }
     setLoading(false);
   };
@@ -79,46 +89,30 @@ const CreateProposal = ({ onProposalCreated }) => {
             }}
           />
         </div>
-        <div style={{ marginBottom: "16px" }}>
+        <div style={{ marginBottom: "12px" }}>
+          <label style={{ fontWeight: 600, color: "#22223b" }}>End Date & Time</label>
           <input
-            type="number"
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-            placeholder="Duration in seconds"
-            min={60}
+            type="datetime-local"
+            value={endDateTime}
+            onChange={e => setEndDateTime(e.target.value)}
             style={{
               width: "100%",
-              padding: "12px",
-              borderRadius: "10px",
+              padding: "10px",
+              borderRadius: "8px",
               border: "1px solid #e5e7eb",
+              marginTop: "6px",
               fontSize: "1rem",
-              background: "#f8fafc",
-              boxShadow: "0 1px 4px rgba(52,152,219,0.06)",
-              outline: "none",
-              marginBottom: "8px",
             }}
+            required
           />
-          <span
-            style={{
-              color: "#64748b",
-              fontSize: "0.98rem",
-              marginLeft: "4px",
-            }}
-          >
-            (Minimum: 60 seconds)
-          </span>
+          <div style={{ color: "#64748b", fontSize: "0.95rem", marginTop: "4px" }}>
+            (Minimum: 1 hour from now)
+          </div>
         </div>
         {error && (
-          <p
-            style={{
-              color: "#e11d48",
-              fontWeight: 600,
-              marginBottom: "12px",
-              textAlign: "center",
-            }}
-          >
+          <div style={{ color: "#e11d48", fontWeight: 600, marginBottom: "10px" }}>
             {error}
-          </p>
+          </div>
         )}
         <button
           type="submit"

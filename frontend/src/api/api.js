@@ -125,18 +125,23 @@ export const getProposal = async (proposal_id) => {
   return res.data.proposal || null;
 };
 
-// ✅ Get all proposals proposed by a specific user (reverse order)
 export const getUserProposals = async (user_address) => {
   const res = await axios.get(`${API_URL}/dao/user/${user_address}`);
   return res.data.proposals || [];
 };
 
-// ✅ Get all live ongoing proposals excluding proposals by the user
 export const getLiveProposals = async (user_address) => {
   const res = await axios.get(`${API_URL}/dao/live/${user_address}`);
   return res.data.proposals || [];
 };
 
+export const getUserVote = async (proposal_id, user_address) => {
+  if (typeof proposal_id !== "number" || isNaN(proposal_id)) {
+    throw new Error("Invalid proposal_id: must be a number");
+  }
+  const res = await axios.get(`${API_URL}/dao/vote/${proposal_id}/${user_address}`);
+  return res.data.voteType || 0;
+};
 
 
 // ----------------- MODERATION -----------------

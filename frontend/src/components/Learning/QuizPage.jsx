@@ -12,13 +12,17 @@ const QuizPage = ({ userAddress }) => {
   const [loadingQuiz, setLoadingQuiz] = useState(false);
   const [currentQ, setCurrentQ] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
+  const [selectedQCount, setSelectedQCount] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     getModules(topicId)
       .then((mods) => {
         const mod = mods.find((m) => m.id.toString() === moduleId);
-        if (mod) setModule(mod);
+        if (mod) {
+          setModule(mod);
+          setSelectedQCount(mod.questionCount); // default to fetched value
+        }
       })
       .catch(console.error);
   }, [topicId, moduleId]);
@@ -62,7 +66,7 @@ const QuizPage = ({ userAddress }) => {
           module.topic_id,
           module.module_id,
           0,
-          module.questionCount
+          selectedQCount // use selected value
         );
 
         const quiz = res.data?.receipt?.quiz || [];
@@ -231,6 +235,34 @@ const QuizPage = ({ userAddress }) => {
         {questions.length > 0 && score === null && (
           <div className="quiz-progress-bg">
             <div className="quiz-progress-fill" style={{ width: `${quizProgress}%` }} />
+          </div>
+        )}
+
+        {/* Select no of questions dropdown */}
+        {!quizStarted && (
+          <div style={{ textAlign: "center", marginBottom: "18px" }}>
+            <label htmlFor="questionCountSelect" style={{ fontWeight: 600, color: "#2563eb", marginRight: "8px" }}>
+              Select no of questions:
+            </label>
+            <select
+              id="questionCountSelect"
+              value={selectedQCount}
+              onChange={e => setSelectedQCount(Number(e.target.value))}
+              style={{
+                padding: "8px 16px",
+                borderRadius: "8px",
+                border: "1.5px solid #2563eb",
+                fontWeight: 600,
+                color: "#2563eb",
+                background: "#f8fafc",
+                fontSize: "1rem"
+              }}
+            >
+              <option value={module.questionCount}>{module.questionCount}</option>
+              <option value={module.questionCount + 5}>{module.questionCount + 5}</option>
+              <option value={module.questionCount + 10}>{module.questionCount + 10}</option>
+              <option value={module.questionCount + 15}>{module.questionCount + 15}</option>
+            </select>
           </div>
         )}
 

@@ -6,7 +6,6 @@ from app.services import dao_service
 
 router = APIRouter(prefix="/dao", tags=["DAO"])
 
-
 # ----------------- MODELS -----------------
 class ProposalCreate(BaseModel):
     description: str
@@ -15,7 +14,7 @@ class ProposalCreate(BaseModel):
 
 class ProposalVote(BaseModel):
     proposal_id: int
-    support: bool
+    support: bool  # True = like, False = dislike
 
 
 class ProposalAction(BaseModel):
@@ -54,11 +53,32 @@ async def get_proposal(proposal_id: int):
 
 @router.get("/user/{user_address}")
 async def get_user_proposals(user_address: str):
-    proposals = dao_service.get_user_proposals(user_address)
-    return {"success": True, "proposals": proposals}
+    try:
+        proposals = dao_service.get_user_proposals(user_address)
+        return {"success": True, "proposals": proposals}
+    except ValueError as ve:
+        return {"success": False, "error": str(ve)}
+    except Exception as e:
+        return {"success": False, "error": "Internal server error"}
 
 
 @router.get("/live/{user_address}")
 async def get_live_proposals(user_address: str):
-    proposals = dao_service.get_live_proposals_excluding(user_address)
-    return {"success": True, "proposals": proposals}
+    try:
+        proposals = dao_service.get_live_proposals_excluding(user_address)
+        return {"success": True, "proposals": proposals}
+    except ValueError as ve:
+        return {"success": False, "error": str(ve)}
+    except Exception as e:
+        return {"success": False, "error": "Internal server error"}
+
+
+@router.get("/vote/{proposal_id}/{user_address}")
+async def get_user_vote(proposal_id: int, user_address: str):
+    try:
+        vote_type = dao_service.get_user_vote(proposal_id, user_address)
+        return {"success": True, "voteType": vote_type}  # 0=no vote, 1=like, 2=dislike
+    except ValueError as ve:
+        return {"success": False, "error": str(ve)}
+    except Exception as e:
+        return {"success": False, "error": "Internal server error"}
