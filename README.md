@@ -180,10 +180,10 @@ uvicorn app.main:app --reload
 <h3 style="color:#FF69B4; font-size:28px; font-weight:900; text-shadow:1px 1px #444;">Environment Variables (.env)</h3>
 <pre><code>HELA_RPC=&lt;Your_HelaChain_RPC_URL&gt;
 PRIVATE_KEY=&lt;Your_Private_Key&gt;
-FEED_ADDRESS=0x8DF522a62a7ea965EAfba8Abd30ec6A45FFF70A5
-COMMENT_ADDRESS=0x67Fa7d4464BC149a6f3D22be68FB5a42aaA33eb2
-LEARNING_ADDRESS=0xb8F249d13e4084D9BB3Ca52037F782ae8d948515
-DAO_ADDRESS=0x906c2EC19a7ADDc52653Ad592a19DaC24eEC9357
-PROFILE_ADDRESS=0x3A3Db94319Bb39B6936472F48E3bf59608fAB0a2
+FEED_ADDRESS=                 ||
+COMMENT_ADDRESS=              ||
+LEARNING_ADDRESS=             ||    Respective contract Addresses
+DAO_ADDRESS=                  ||
+PROFILE_ADDRESS=              ||
 OPENROUTER_API_KEY=&lt;Your_OpenRouter_API_Key&gt;
 </code></pre>
