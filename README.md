@@ -148,8 +148,6 @@
 <li><strong>Profile:</strong> https://testnet.helascan.io/address/0x3A3Db94319Bb39B6936472F48E3bf59608fAB0a2</li>
 </ul>
 
-<h2
-<img width="1536" height="603" alt="Screenshot 2025-10-09 151316" src="https://github.com/user-attachments/assets/80424df5-27c9-4ead-a29c-eba3cd2a4510" />
   
 <h2 style="color:#FF6347; font-size:34px; font-weight:900; text-shadow:2px 2px #555;">Getting Started</h2>
 
