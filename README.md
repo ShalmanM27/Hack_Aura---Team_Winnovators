@@ -16,9 +16,6 @@
 <li>Earn NFT badges and maintain streaks</li>
 <li>Participate in DAO governance</li>
 <li>Engage with a reward-based social feed</li>
-</ul><img width="1536" height="603" alt="Screenshot 2025-10-09 151316" src="https://github.com/user-attachments/assets/daec2c87-0233-4420-8ffc-36fea630cd1a" />
-<img width="1536" height="724" alt="Screenshot 2025-10-09 151119" src="https://github.com/user-attachments/assets/28cfb977-0c20-4f86-aeb6-28300786f301" />
-
 
 
 <h1 style="color:#FFD700; font-size:34px; font-weight:900; text-shadow:2px 2px #555;">How It Works</h1>
@@ -152,6 +149,11 @@
 </ul>
 
 
+<h2
+<img width="1536" height="603" alt="Screenshot 2025-10-09 151316" src="https://github.com/user-attachments/assets/80424df5-27c9-4ead-a29c-eba3cd2a4510" />
+
+
+  
 <h2 style="color:#FF6347; font-size:34px; font-weight:900; text-shadow:2px 2px #555;">Getting Started</h2>
 
 
@@ -190,6 +192,3 @@ DAO_ADDRESS=0x906c2EC19a7ADDc52653Ad592a19DaC24eEC9357
 PROFILE_ADDRESS=0x3A3Db94319Bb39B6936472F48E3bf59608fAB0a2
 OPENROUTER_API_KEY=&lt;Your_OpenRouter_API_Key&gt;
 </code></pre>
-
-<h2
-<img width="1536" height="603" alt="Screenshot 2025-10-09 151316" src="https://github.com/user-attachments/assets/80424df5-27c9-4ead-a29c-eba3cd2a4510" />
