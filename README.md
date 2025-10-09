@@ -16,7 +16,9 @@
 <li>Earn NFT badges and maintain streaks</li>
 <li>Participate in DAO governance</li>
 <li>Engage with a reward-based social feed</li>
-</ul>
+</ul><img width="1536" height="603" alt="Screenshot 2025-10-09 151316" src="https://github.com/user-attachments/assets/daec2c87-0233-4420-8ffc-36fea630cd1a" />
+<img width="1536" height="724" alt="Screenshot 2025-10-09 151119" src="https://github.com/user-attachments/assets/28cfb977-0c20-4f86-aeb6-28300786f301" />
+
 
 
 <h1 style="color:#FFD700; font-size:34px; font-weight:900; text-shadow:2px 2px #555;">How It Works</h1>
